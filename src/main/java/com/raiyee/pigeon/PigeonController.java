@@ -1,42 +1,48 @@
 package com.raiyee.pigeon;
 
-import com.alibaba.otter.canal.server.embedded.CanalServerWithEmbedded;
+import com.raiyee.pigeon.config.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
 
 /**
- * TODO: Document Me!!
+ * Pigeon 控制器。
  *
  * @author wanglei
  * @date 17/1/12 下午5:49
  */
 public class PigeonController {
     private static final Logger LOG = LoggerFactory.getLogger(PigeonController.class);
-    private CanalServerWithEmbedded canalServer;
+    private final CanalServerConfig canalServerConfig;
+    private final RabbitMQConfig rabbitMQConfig;
+    private final TaskGlobalConfig taskGlobalConfig;
+    private final Map<String, TaskConfig> taskConfigs;
+
+    private ExecutorService executor;
 
     public PigeonController(Properties properties) {
-        // TODO: 加载 Task 列表、并依次执行
-    }
-
-    private PigeonTask getTask() {
-        PigeonTask task = new PigeonTask();
-        task.setId(1);
-        task.setName("demo");
-        task.setDestination("demo");
-        task.setFilter(".*\\..*");
-        task.setBatchSize(1000);
-        return task;
+        this.canalServerConfig = ConfigInitiator.initCanalServerConfig(properties);
+        this.rabbitMQConfig = ConfigInitiator.initRabbitMQConfig(properties);
+        this.taskGlobalConfig = ConfigInitiator.initTaskGlobalConfig(properties);
+        try {
+            this.taskConfigs = ConfigInitiator.initTaskConfigs(this.taskGlobalConfig);
+            if (CollectionUtils.isEmpty(this.taskConfigs)) {
+                throw new RuntimeException("not found task config files");
+            }
+        } catch (Exception e) {
+            LOG.error("init task config failed.", e);
+            throw new RuntimeException(e);
+        }
     }
 
     public void start() {
-        PigeonTask task = getTask();
-        CanalEmbedServer canalEmbedServer = new CanalEmbedServer(task);
-        canalEmbedServer.start();
     }
 
     public void stop() {
-
     }
+
 }
