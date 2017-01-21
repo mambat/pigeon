@@ -1,13 +1,12 @@
 package com.raiyee.pigeon.config;
 
 /**
- * CanalClient 配置信息.
+ * Canal Task 配置信息.
  *
  * @author wanglei
  * @date 17/1/19 下午4:03
  */
 public class TaskConfig {
-    private TaskGlobalConfig globalConfig;
     private String id;
     private String name;
     private String filter;
@@ -15,10 +14,9 @@ public class TaskConfig {
     private int batchSize;
     private boolean disabled;
     private String rabbitQueue;
-
-    public TaskConfig(TaskGlobalConfig globalConfig) {
-        this.globalConfig = globalConfig;
-    }
+    private TaskGlobalConfig globalConfig;
+    private CanalServerConfig canalServerConfig;
+    private RabbitMQConfig rabbitMQConfig;
 
     public String getId() {
         return id;
@@ -80,17 +78,43 @@ public class TaskConfig {
         this.rabbitQueue = rabbitQueue;
     }
 
+    public TaskGlobalConfig getGlobalConfig() {
+        return globalConfig;
+    }
+
+    public void setGlobalConfig(TaskGlobalConfig globalConfig) {
+        this.globalConfig = globalConfig;
+    }
+
+    public CanalServerConfig getCanalServerConfig() {
+        return canalServerConfig;
+    }
+
+    public void setCanalServerConfig(CanalServerConfig canalServerConfig) {
+        this.canalServerConfig = canalServerConfig;
+    }
+
+    public RabbitMQConfig getRabbitMQConfig() {
+        return rabbitMQConfig;
+    }
+
+    public void setRabbitMQConfig(RabbitMQConfig rabbitMQConfig) {
+        this.rabbitMQConfig = rabbitMQConfig;
+    }
+
     @Override
     public String toString() {
         return "TaskConfig{" +
-                "globalConfig=" + globalConfig +
-                ", id='" + id + '\'' +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", filter='" + filter + '\'' +
                 ", destination='" + destination + '\'' +
                 ", batchSize=" + batchSize +
                 ", disabled=" + disabled +
                 ", rabbitQueue='" + rabbitQueue + '\'' +
+                ", globalConfig=" + globalConfig +
+                ", canalServerConfig=" + canalServerConfig +
+                ", rabbitMQConfig=" + rabbitMQConfig +
                 '}';
     }
 }
